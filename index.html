@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>To 3iniya</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Playfair+Display+SC&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blush: #ffe4ef;
+    --blush-deep: #ffc4dd;
+    --petal: #ff8fb8;
+    --rose: #ff5c96;
+    --ink: #1c1414;
+    --paper: #fff8fb;
+    --gold: #e7a8c4;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    min-height:100%;
+    background:
+      radial-gradient(circle at 15% 10%, var(--blush-deep), transparent 45%),
+      radial-gradient(circle at 85% 90%, var(--blush-deep), transparent 45%),
+      var(--blush);
+    font-family:'Patrick Hand', cursive;
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+
+  .stage{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    position:relative;
+  }
+
+  /* ===== envelope ===== */
+  #envelope-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    cursor:pointer;
+    z-index:5;
+  }
+
+  .envelope{
+    width:300px;
+    height:200px;
+    position:relative;
+    filter:drop-shadow(0 18px 30px rgba(255,92,150,.25));
+  }
+
+  .env-body{
+    position:absolute;
+    inset:0;
+    background: linear-gradient(180deg, var(--paper), #ffeef5);
+    border:2px solid var(--rose);
+    border-radius:10px;
+  }
+
+  .env-flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:110px;
+    background: linear-gradient(135deg, var(--petal), var(--rose));
+    clip-path: polygon(0 0, 100% 0, 50% 78%);
+    transform-origin: top;
+    transition: transform 1s cubic-bezier(.6,0,.3,1);
+    border-radius:10px 10px 0 0;
+    z-index:3;
+  }
+
+  .env-seal{
+    position:absolute;
+    top:64px; left:50%;
+    transform:translate(-50%,0);
+    width:46px; height:46px;
+    background:var(--rose);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff; font-size:22px;
+    box-shadow:0 4px 10px rgba(0,0,0,.15);
+    z-index:4;
+    transition:opacity .3s ease;
+  }
+
+  .env-letter-peek{
+    position:absolute;
+    left:14px; right:14px; bottom:14px; top:22px;
+    background:var(--paper);
+    border:1.5px solid var(--gold);
+    border-radius:6px;
+    z-index:2;
+    transition: transform 1s cubic-bezier(.6,0,.3,1);
+  }
+
+  #envelope-wrap:hover .env-flap{ transform: rotateX(-8deg); }
+
+  .envelope.opened .env-flap{
+    transform: rotateX(-180deg);
+    z-index:1;
+  }
+  .envelope.opened .env-seal{ opacity:0; }
+  .envelope.opened .env-letter-peek{
+    transform: translateY(-150px) scale(1.02);
+  }
+
+  .hint{
+    font-family:'Caveat', cursive;
+    font-size:28px;
+    color:var(--rose);
+    text-align:center;
+  }
+
+  /* ===== letter ===== */
+  #letter{
+    max-width:640px;
+    width:100%;
+    margin:60px auto 100px;
+    background:var(--paper);
+    border-radius:18px;
+    padding:52px 44px 60px;
+    box-shadow: 0 30px 60px rgba(255,92,150,.22), 0 2px 0 var(--gold) inset;
+    position:relative;
+    display:none;
+    opacity:0;
+    transform:translateY(30px);
+    transition: opacity .9s ease, transform .9s ease;
+    border:1px solid #ffd7e7;
+  }
+
+  #letter.show{
+    display:block;
+  }
+  #letter.reveal{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  #letter::before{
+    content:"";
+    position:absolute;
+    top:18px; left:18px; right:18px; bottom:18px;
+    border:1.5px dashed var(--gold);
+    border-radius:12px;
+    pointer-events:none;
+  }
+
+  .letter-title{
+    font-family:'Playfair Display SC', serif;
+    text-align:center;
+    color:var(--rose);
+    font-size:15px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  .letter-heading{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:52px;
+    text-align:center;
+    color:var(--ink);
+    margin:0 0 6px;
+  }
+
+  .letter-heart-row{
+    text-align:center;
+    color:var(--petal);
+    font-size:20px;
+    margin-bottom:30px;
+    letter-spacing:8px;
+  }
+
+  .salutation{
+    font-family:'Caveat', cursive;
+    font-size:34px;
+    color:var(--rose);
+    margin-bottom:18px;
+  }
+
+  .letter-body p{
+    font-size:21px;
+    line-height:1.75;
+    margin:0 0 20px;
+  }
+
+  .letter-body .emph{
+    color:var(--rose);
+    font-weight:normal;
+  }
+
+  .signoff{
+    margin-top:36px;
+    text-align:right;
+    font-family:'Caveat', cursive;
+    font-size:36px;
+    color:var(--rose);
+  }
+
+  .closing-line{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:40px;
+    color:var(--ink);
+    margin-top:38px;
+    border-top:1.5px dashed var(--gold);
+    padding-top:26px;
+  }
+
+  @media (max-width:600px){
+    #letter{ padding:38px 22px 46px; }
+    .letter-heading{ font-size:40px; }
+    .letter-body p{ font-size:19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div id="envelope-wrap">
+    <div class="envelope" id="envelope">
+      <div class="env-body"></div>
+      <div class="env-letter-peek"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal">❤</div>
+    </div>
+    <div class="hint" id="hint">tap the envelope, 3iniya</div>
+  </div>
+</div>
+
+<div id="letter">
+  <div class="letter-title">a letter for you</div>
+  <div class="letter-heading">To 3iniya</div>
+  <div class="letter-heart-row">♡ ♡ ♡</div>
+
+  <div class="letter-body">
+    <p class="salutation">Hello 3iniya,</p>
+
+    <p>I know these past weeks haven't shown us at our best, but I wanted to do something quiet and honest to remind you how loved you are. Distance is the hardest part of us, the miles standing between two people who only want to close them. Still, I hold onto everything we've built with more <span class="emph">respect and admiration</span> than words can really carry.</p>
+
+    <p>What worries me most isn't the distance, though. It's you. Your heart, your mind, the quiet corners you keep to yourself. I've tried to talk to you about it, but I've felt so powerless, like the only thing I could offer was space and time, room to breathe and heal without me adding to the weight of it. And yet, in that same silence, I still cry sometimes, because I know you misunderstand me. Please believe me: I have never meant to hurt you, not even for a second. When you think I'm upset, I promise I'm not angry, I'm only trying to talk it through, to laugh it off, to find my way back to you. So please, don't hide from me anymore.</p>
+
+    <p><span class="emph">I love you. I really do.</span> Fiercely, and without conditions. You're the only man I've ever sacrificed for, the only one I've ever wanted this much, this completely. I hope that one day you'll understand that I never wanted to hurt you, only to understand you, to mend what's broken between us with patience instead of blame.</p>
+
+    <p>I didn't grow up with much softness. Love wasn't always given freely to me, and attention was something I had to earn or go without. So accepting that I'm loved, really loved, doesn't come easy. I'm not making excuses, I'm only telling you, gently, that I show up every single day and try, because I love you more than I know how to say.</p>
+
+    <p class="closing-line">To the man I love most in this world. ❤</p>
+  </div>
+</div>
+
+<script>
+  const wrap = document.getElementById('envelope-wrap');
+  const envelope = document.getElementById('envelope');
+  const hint = document.getElementById('hint');
+  const letter = document.getElementById('letter');
+  let opened = false;
+
+  wrap.addEventListener('click', () => {
+    if(opened) return;
+    opened = true;
+    envelope.classList.add('opened');
+    hint.style.transition = 'opacity .5s ease';
+    hint.style.opacity = '0';
+
+    setTimeout(() => {
+      wrap.style.transition = 'opacity .6s ease';
+      wrap.style.opacity = '0';
+      letter.classList.add('show');
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=> letter.classList.add('reveal'));
+      });
+      letter.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 900);
+  });
+</script>
+
+</body>
+</html>
